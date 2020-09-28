@@ -1,0 +1,97 @@
+*, :hover, ::before, ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+main {
+    min-height: 100vh;
+    background-image: linear-gradient(to right, #E4572E, #F0F66E);
+}
+
+.container-main {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: minmax(120px, auto) repeat(5, 100px);
+    justify-content: center;
+    align-content: center;
+    padding-top: 150px;
+}
+
+.screen-container {
+    background-color: #0a383e;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    flex-direction: column;
+    padding: 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.screen-main {
+    align-content: flex-end;
+    color: white;
+    font-size: 3rem;
+}
+
+.screen-secondary {
+    color: rgba(253, 253, 253, .6);
+}
+
+.container-main > button {
+    cursor: pointer;
+    font-size: 2rem;
+    border: 1px solid  rgba(253, 253, 253, .2);
+    outline: none;
+}
+
+.span-two {
+    grid-column: span 2;
+}
+
+.number {
+    background-color: #0d4e57;
+    color: white;
+    font-weight: 100;
+}
+
+.number:hover {
+    opacity: .97;
+}
+
+.operation {
+    background-color: #19484f;
+    color: rgba(253, 253, 253, .5);
+}
+
+.operation:hover {
+    color: white;
+}
+
+#clear {
+    color: #da6a69; 
+}
+
+#clear:hover {
+    color: #db5957;
+}
+
+#equals {
+    background-color: #da6a69;
+    color: white;
+    border-bottom-right-radius: 10px;
+}
+
+#equals:hover {
+    background-color: #db5957;
+}
+
+#zero {
+    border-bottom-left-radius: 10px;
+}
