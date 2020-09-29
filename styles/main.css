@@ -51,10 +51,6 @@ main {
     outline: none;
 }
 
-.span-two {
-    grid-column: span 2;
-}
-
 .number {
     background-color: #0d4e57;
     color: white;
