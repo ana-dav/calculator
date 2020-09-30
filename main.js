@@ -1,64 +1,78 @@
 class Calculator {
-    constructor(previousOperandTextElement, currentOperandTextElement) {
-        this.previousOperandTextElement = previousOperandTextElement
-        this.currentOperandTextElement = currentOperandTextElement
+    constructor(upperScreenPart, lowerScreenPart) {
+        this.upperScreenPart = upperScreenPart
+        this.lowerScreenPart = lowerScreenPart
+        this.readyToReset = false
         this.clear()
     }
 
     clear() {
-        //currentOperand?
         this.currentOperand = ''
         this.previousOperand = ''
         this.operation = undefined
+        this.readyToReset = false
     }
 
     delete() {
         this.currentOperand = this.currentOperand.toString().slice(0, -1)
     }
     
+    appendNumber(number) {
+        if(number === '.' && this.currentOperand.includes('.')) return
+        this.currentOperand = this.currentOperand.toString() + number.toString()
+    }
+
     chooseOperation(operation) {
         if (this.currentOperand === '') return
-        if (this.previousOperand !== '') {
+        // if(operation === '&#8730;') {
+        //     this.computeSqrt()
+        // }
+        if (this.currentOperand !== '' && this.previousOperand !== '') {
             this.compute()
         }
         this.operation = operation
         this.previousOperand = this.currentOperand
         this.currentOperand = ''
     }
-    //appendNumber
-    showNumberOnTheScreen(number) {
-        if(number === '.' && this.currentOperand.includes('.')) return
-        this.currentOperand = this.currentOperand.toString() + number.toString()
-    }
+    
 
     compute() {
         let computation
-        const prev = parseFloat(this.previousOperand)
-        const current = parseFloat(this.currentOperand)
-        if (isNaN(prev) || isNaN(current)) return
+        const previousToNum = parseFloat(this.previousOperand)
+        const currentToNum = parseFloat(this.currentOperand)
+        if (isNaN(previousToNum) || isNaN(currentToNum)) return
         switch (this.operation) {
             case '+': 
-                computation = prev + current
+                computation = previousToNum + currentToNum
                 break
             case '-':
-                computation = prev - current
+                computation = previousToNum - currentToNum
                 break
             case '/':
-                computation = prev / current
+                computation = previousToNum / currentToNum
                 break
             case '×':
-                computation = prev * current
-                break
-            case '√':
-                computation = Math.sqrt(prev)
+                computation = previousToNum * currentToNum
                 break
             case 'xn':
-                computation = Math.pow(prev, current)
+                computation = Math.pow(previousToNum, currentToNum)
                 break
             default:
                 return
         }
+        this.readyToReset = true
         this.currentOperand = computation
+        this.operation = undefined
+        this.previousOperand = ''
+    }
+
+    computeSqrt() {
+        const previousToNum = parseFloat(this.previousOperand)
+        if(isNaN(previousToNum)) return        
+        let result = Math.sqrt(previousToNum)
+        
+        this.readyToReset = true
+        this.currentOperand = result
         this.operation = undefined
         this.previousOperand = ''
     }
@@ -80,33 +94,46 @@ class Calculator {
           }
     }
 
+    updateDisplaySqrt() {
+        this.upperScreenPart.innerText = this.currentOperand
+    }
+
     updateDisplay() {
-        this.currentOperandTextElement.innerText = 
+        this.upperScreenPart.innerText = 
         this.getDisplayNumber(this.currentOperand)
-        if (this.operation != null) {
-            this.previousOperandTextElement.innerText = 
-            `${this.previousOperand} ${this.operation} ${this.operation}`
+        if (this.operation === 'xn') {
+            this.lowerScreenPart.innerText = 
+            `${this.getDisplayNumber(this.previousOperand)} ^`
+        } else if (this.operation != null) {
+            this.lowerScreenPart.innerText = 
+            `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
         } else {
-            this.previousOperandTextElement.innerText = ''
+            this.lowerScreenPart.innerText = ''
         }
     }
 }
 
 const numberButtons = document.querySelectorAll('[data-number]')
 const operantionButtons = document.querySelectorAll('[data-operation]')
+const sqrtButton = document.querySelector('[data-sqrt]')
 const deleteButton = document.querySelector('[data-clear]')
 const clearAllButton = document.querySelector('[data-clear-all]')
 const equalsButton = document.querySelector('[data-equals]')
-const currentOperandTextElement = document.querySelector('[data-current-request]')
-console.log(currentOperandTextElement)
-const previousOperandTextElement = document.querySelector('[data-previous-request]')
+const upperScreenPart = document.querySelector('[data-upper-screen]')
+const lowerScreenPart = document.querySelector('[data-lower-screen]')
 
-const calculator = new Calculator(previousOperandTextElement, currentOperandTextElement)
+const calculator = new Calculator(upperScreenPart, lowerScreenPart)
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
-        //innerText - HTMLElement.innerText
-        calculator.showNumberOnTheScreen(button.innerText)
+
+        if(calculator.previousOperand === '' &&
+        calculator.currentOperand !== '' &&
+    calculator.readyToReset) {
+            calculator.currentOperand = '';
+            calculator.readyToReset = false;
+        }
+        calculator.appendNumber(button.innerText)
         calculator.updateDisplay()
     })
 })
@@ -116,6 +143,12 @@ operantionButtons.forEach(button => {
         calculator.chooseOperation(button.innerText)
         calculator.updateDisplay()
     })
+})
+
+sqrtButton.addEventListener('click', button => {
+    calculator.chooseOperation(button.innerText)
+    calculator.computeSqrt()
+    calculator.updateDisplaySqrt()
 })
 
 equalsButton.addEventListener('click', button => {

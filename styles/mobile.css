@@ -10,6 +10,14 @@
 
 @media only screen and (max-height: 666px) {
     .container-main {
+        height: 100vh;
+        align-content: end;
+
+    }
+}
+
+@media only screen and (max-height: 615px) {
+    .container-main {
         padding: 0;
         grid-template-columns: repeat(4, 25%);
         grid-template-rows: minmax(100px, auto) repeat(5, 52px);
