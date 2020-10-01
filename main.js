@@ -18,15 +18,16 @@ class Calculator {
     }
     
     appendNumber(number) {
-        if(number === '.' && this.currentOperand.includes('.')) return
+        if(number === '.' && this.currentOperand.includes('.')
+            || number === '-' && this.currentOperand.includes('-')) return
+        //if(this.currentOperand === '-' && this.number === '') return
+        //console.log(number)
         this.currentOperand = this.currentOperand.toString() + number.toString()
+        //console.log(this.currentOperand, this.operation, this.previousOperand)
     }
 
     chooseOperation(operation) {
         if (this.currentOperand === '') return
-        // if(operation === '&#8730;') {
-        //     this.computeSqrt()
-        // }
         if (this.currentOperand !== '' && this.previousOperand !== '') {
             this.compute()
         }
@@ -42,42 +43,53 @@ class Calculator {
         const currentToNum = parseFloat(this.currentOperand)
         if (isNaN(previousToNum) || isNaN(currentToNum)) return
         switch (this.operation) {
-            case '+': 
-                computation = previousToNum + currentToNum
-                break
-            case '-':
-                computation = previousToNum - currentToNum
-                break
-            case '/':
-                computation = previousToNum / currentToNum
-                break
-            case '×':
-                computation = previousToNum * currentToNum
-                break
-            case 'xn':
-                computation = Math.pow(previousToNum, currentToNum)
-                break
-            default:
-                return
+        case '+': 
+            computation = previousToNum + currentToNum
+            break
+        case '-':
+            if (previousToNum < 0 || currentToNum < 0) {
+                    computation = previousToNum + currentToNum
+                } else if (previousToNum < 0 && currentToNum < 0) {
+                    computation = previousToNum + currentToNum
+                    console.log(computation.toString())
+                } else {
+                    computation = previousToNum - currentToNum
+                }
+            break
+        case '/':
+            computation = previousToNum / currentToNum
+            break
+        case '×':
+            computation = previousToNum * currentToNum
+            break
+        case 'xn':
+            computation = Math.pow(previousToNum, currentToNum)
+            break
+        default:
+            return
         }
+               
         this.readyToReset = true
         this.currentOperand = computation
         this.operation = undefined
         this.previousOperand = ''
     }
-
+   
     computeSqrt() {
         const previousToNum = parseFloat(this.previousOperand)
-        if(isNaN(previousToNum)) return        
+        if(isNaN(previousToNum)) return    
         let result = Math.sqrt(previousToNum)
-        
+        if(isNaN(result)) result = 'Error'
         this.readyToReset = true
         this.currentOperand = result
         this.operation = undefined
         this.previousOperand = ''
+
+        this.upperScreenPart.innerText = this.currentOperand
     }
 
     getDisplayNumber(number) {
+        if(number === '-') return number.toString()
         const stringNumber = number.toString()
         const integerDigits = parseFloat(stringNumber.split('.')[0])
         const decimalDigits = stringNumber.split('.')[1]
@@ -94,11 +106,8 @@ class Calculator {
           }
     }
 
-    updateDisplaySqrt() {
-        this.upperScreenPart.innerText = this.currentOperand
-    }
-
     updateDisplay() {
+        console.log(this.currentOperand)
         this.upperScreenPart.innerText = 
         this.getDisplayNumber(this.currentOperand)
         if (this.operation === 'xn') {
@@ -115,6 +124,7 @@ class Calculator {
 
 const numberButtons = document.querySelectorAll('[data-number]')
 const operantionButtons = document.querySelectorAll('[data-operation]')
+const minusButton = document.querySelector('[data-minus]')
 const sqrtButton = document.querySelector('[data-sqrt]')
 const deleteButton = document.querySelector('[data-clear]')
 const clearAllButton = document.querySelector('[data-clear-all]')
@@ -126,16 +136,27 @@ const calculator = new Calculator(upperScreenPart, lowerScreenPart)
 
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
-
         if(calculator.previousOperand === '' &&
-        calculator.currentOperand !== '' &&
-    calculator.readyToReset) {
-            calculator.currentOperand = '';
-            calculator.readyToReset = false;
+            calculator.currentOperand !== '' &&
+            calculator.readyToReset) {
+                //calculator.currentOperand = '';
+                calculator.readyToReset = false;
         }
         calculator.appendNumber(button.innerText)
         calculator.updateDisplay()
     })
+})
+
+minusButton.addEventListener('click', () => {
+    if(calculator.currentOperand === '' || calculator.currentOperand === '-') {
+        calculator.appendNumber(minusButton.innerText)
+        calculator.updateDisplay(minusButton.innerText)
+    } else {
+        console.log('operation minus')
+        calculator.chooseOperation(minusButton.innerText)
+        calculator.updateDisplay()
+    }
+    
 })
 
 operantionButtons.forEach(button => {
@@ -145,10 +166,9 @@ operantionButtons.forEach(button => {
     })
 })
 
-sqrtButton.addEventListener('click', button => {
-    calculator.chooseOperation(button.innerText)
+sqrtButton.addEventListener('click', () => {
+    calculator.chooseOperation(sqrtButton.innerText)
     calculator.computeSqrt()
-    calculator.updateDisplaySqrt()
 })
 
 equalsButton.addEventListener('click', button => {
