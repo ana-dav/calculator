@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="styles/main.css" rel="stylesheet">
+    <link href="styles/mobile.css" rel="stylesheet">
+    <script src='https://cdn.jsdelivr.net/npm/big.js@6.0.0/big.min.js'></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet"> 
+    <title>Calculator</title>
+</head>
+<body>
+    <main>
+        <div class="container-main">
+            <div class="screen-container">
+                <div data-upper-screen class="screen-main"></div>
+                <div data-lower-screen class="screen-secondary"></div>
+            </div>
+            <button data-clear-all id="clear" class="operation">AC</button>
+            <button data-clear class="operation">DEL</button>
+            <button data-sqrt class="operation">√</button>
+            <button data-operation class="operation">/</button>
+            <button data-number class="number">7</button>
+            <button data-number class="number">8</button>
+            <button data-number class="number">9</button>
+            <button data-operation class="operation">×</button>
+            <button data-number class="number">4</button>
+            <button data-number class="number">5</button>
+            <button data-number class="number">6</button>
+            <button data-minus class="operation">-</button>
+            <button data-number class="number">1</button>
+            <button data-number class="number">2</button>
+            <button data-number class="number">3</button>
+            <button data-operation class="operation">+</button>
+            <button data-number id="zero" class="number">0</button>
+            <button data-number class="number">.</button>
+            <button data-operation class="operation">x<sup>n</sup></button>
+            <button data-equals id="equals" class="operation">=</button>            
+        </div>
+    </main>
+    
+    <script type="module" src="./main.js" crossorigin></script>
+    <script type="module" src="./script.js" crossorigin></script>
+</body>
+</html>
