@@ -1,3 +1,5 @@
+import updateDisplay from './script.js'
+
 class Calculator {
     constructor(upperScreenPart, lowerScreenPart) {
         this.upperScreenPart = upperScreenPart
@@ -45,6 +47,7 @@ class Calculator {
                 break
             case '-':
                 if (previousToBig < 0 || currentToBig < 0) {
+                    
                         computation = previousToBig.add(currentToBig)
                     } else if (previousToBig < 0 && currentToBig < 0) {
                         computation = previousToBig.add(currentToBig)
@@ -75,7 +78,7 @@ class Calculator {
     computeSqrt() {
         const previousToNum = parseFloat(this.previousOperand)
         if(isNaN(previousToNum)) return    
-        let result = Math.sqrt(previousToNum)
+        const result = Math.sqrt(previousToNum)
         if(isNaN(result)) result = 'Error'
         this.readyToReset = true
         this.currentOperand = result
@@ -85,38 +88,38 @@ class Calculator {
         this.upperScreenPart.innerText = this.currentOperand
     }
 
-    getDisplayNumber(number) {
-        if(number === '-') return number.toString()
-        const stringNumber = number.toString()
-        const integerDigits = parseFloat(stringNumber.split('.')[0])
-        const decimalDigits = stringNumber.split('.')[1]
-        let integerDisplay
-        if (isNaN(integerDigits)) {
-            integerDisplay = ''
-          } else {
-            integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 })
-          }
-          if (decimalDigits != null) {
-            return `${integerDisplay}.${decimalDigits}`
-          } else {
-            return integerDisplay
-          }
-    }
+    // getDisplayNumber(number) {
+    //     if(number === '-') return number.toString()
+    //     const stringNumber = number.toString()
+    //     const integerDigits = parseFloat(stringNumber.split('.')[0])
+    //     const decimalDigits = stringNumber.split('.')[1]
+    //     let integerDisplay
+    //     if (isNaN(integerDigits)) {
+    //         integerDisplay = ''
+    //       } else {
+    //         integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 })
+    //       }
+    //       if (decimalDigits != null) {
+    //         return `${integerDisplay}.${decimalDigits}`
+    //       } else {
+    //         return integerDisplay
+    //       }
+    // }
 
-    updateDisplay() {
-        console.log(this.currentOperand)
-        this.upperScreenPart.innerText = 
-        this.getDisplayNumber(this.currentOperand)
-        if (this.operation === 'xn') {
-            this.lowerScreenPart.innerText = 
-            `${this.getDisplayNumber(this.previousOperand)} ^`
-        } else if (this.operation != null) {
-            this.lowerScreenPart.innerText = 
-            `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
-        } else {
-            this.lowerScreenPart.innerText = ''
-        }
-    }
+    // updateDisplay() {
+    //     console.log(this.currentOperand)
+    //     this.upperScreenPart.innerText = 
+    //     this.getDisplayNumber(this.currentOperand)
+    //     if (this.operation === 'xn') {
+    //         this.lowerScreenPart.innerText = 
+    //         `${this.getDisplayNumber(this.previousOperand)} ^`
+    //     } else if (this.operation != null) {
+    //         this.lowerScreenPart.innerText = 
+    //         `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`
+    //     } else {
+    //         this.lowerScreenPart.innerText = ''
+    //     }
+    // }
 }
 
 const numberButtons = document.querySelectorAll('[data-number]')
@@ -140,18 +143,18 @@ numberButtons.forEach(button => {
                 calculator.readyToReset = false;
         }
         calculator.appendNumber(button.innerText)
-        calculator.updateDisplay()
+        updateDisplay.call(calculator)
     })
 })
 
 minusButton.addEventListener('click', () => {
     if(calculator.currentOperand === '' || calculator.currentOperand === '-') {
         calculator.appendNumber(minusButton.innerText)
-        calculator.updateDisplay(minusButton.innerText)
+        updateDisplay.call(calculator, minusButton.innerText)
     } else {
         console.log('operation minus')
         calculator.chooseOperation(minusButton.innerText)
-        calculator.updateDisplay()
+        updateDisplay.call(calculator)
     }
     
 })
@@ -159,7 +162,7 @@ minusButton.addEventListener('click', () => {
 operantionButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.chooseOperation(button.innerText)
-        calculator.updateDisplay()
+        updateDisplay.call(calculator)
     })
 })
 
@@ -170,15 +173,15 @@ sqrtButton.addEventListener('click', () => {
 
 equalsButton.addEventListener('click', button => {
     calculator.compute()
-    calculator.updateDisplay()
+    updateDisplay.call(calculator)
 })
 
 clearAllButton.addEventListener('click', button => {
     calculator.clear()
-    calculator.updateDisplay()
+    updateDisplay.call(calculator)
 })
 
 deleteButton.addEventListener('click', button => {
     calculator.delete()
-    calculator.updateDisplay()
+    updateDisplay.call(calculator)
 })
