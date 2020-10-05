@@ -20,10 +20,7 @@ class Calculator {
     appendNumber(number) {
         if(number === '.' && this.currentOperand.includes('.')
             || number === '-' && this.currentOperand.includes('-')) return
-        //if(this.currentOperand === '-' && this.number === '') return
-        //console.log(number)
         this.currentOperand = this.currentOperand.toString() + number.toString()
-        //console.log(this.currentOperand, this.operation, this.previousOperand)
     }
 
     chooseOperation(operation) {
@@ -35,42 +32,42 @@ class Calculator {
         this.previousOperand = this.currentOperand
         this.currentOperand = ''
     }
-    
 
     compute() {
         let computation
-        const previousToNum = parseFloat(this.previousOperand)
-        const currentToNum = parseFloat(this.currentOperand)
-        if (isNaN(previousToNum) || isNaN(currentToNum)) return
+        const previousToBig = new Big(this.previousOperand)
+        const currentToBig = new Big(this.currentOperand)
+        //TODO
+        if (isNaN(previousToBig) || isNaN(currentToBig)) return
         switch (this.operation) {
-        case '+': 
-            computation = previousToNum + currentToNum
-            break
-        case '-':
-            if (previousToNum < 0 || currentToNum < 0) {
-                    computation = previousToNum + currentToNum
-                } else if (previousToNum < 0 && currentToNum < 0) {
-                    computation = previousToNum + currentToNum
-                    console.log(computation.toString())
-                } else {
-                    computation = previousToNum - currentToNum
-                }
-            break
-        case '/':
-            computation = previousToNum / currentToNum
-            break
-        case '×':
-            computation = previousToNum * currentToNum
-            break
-        case 'xn':
-            computation = Math.pow(previousToNum, currentToNum)
-            break
-        default:
-            return
+            case '+': 
+                computation = previousToBig.add(currentToBig)
+                break
+            case '-':
+                if (previousToBig < 0 || currentToBig < 0) {
+                        computation = previousToBig.add(currentToBig)
+                    } else if (previousToBig < 0 && currentToBig < 0) {
+                        computation = previousToBig.add(currentToBig)
+                    } else {
+                        computation = previousToBig.minus(currentToBig)
+                    }
+                break
+            case '/':
+                computation = previousToBig.div(currentToBig)
+                break
+            case '×':
+                computation = previousToBig.times(currentToBig)
+                break
+            case 'xn':
+                computation = Math.pow(previousToNum, currentToBig)
+                break
+            default:
+                return
         }
-               
+        
+        const computationString = computation.valueOf()
         this.readyToReset = true
-        this.currentOperand = computation
+        this.currentOperand = computationString
         this.operation = undefined
         this.previousOperand = ''
     }
@@ -139,7 +136,7 @@ numberButtons.forEach(button => {
         if(calculator.previousOperand === '' &&
             calculator.currentOperand !== '' &&
             calculator.readyToReset) {
-                //calculator.currentOperand = '';
+                calculator.currentOperand = '';
                 calculator.readyToReset = false;
         }
         calculator.appendNumber(button.innerText)
