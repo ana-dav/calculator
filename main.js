@@ -59,7 +59,7 @@ class Calculator {
                 computation = previousToBig.times(currentToBig)
                 break
             case 'xn':
-                computation = Math.pow(previousToNum, currentToBig)
+                computation = Math.pow(previousToBig, currentToBig)
                 break
             default:
                 return
